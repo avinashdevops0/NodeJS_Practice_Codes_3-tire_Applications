@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="login-page" class="page active">
+            <div class="form-container">
+                <h2>Welcome Back</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <input type="email" id="login-email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                </form>
+                <p class="switch-form">
+                    Don't have an account? <a href="#" onclick="showPage('register-page')">Sign Up</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="register-page" class="page">
+            <div class="form-container">
+                <h2>Create Account</h2>
+                <form id="register-form">
+                    <div class="input-group">
+                        <input type="text" id="register-name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="register-email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="register-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Create Account</button>
+                </form>
+                <p class="switch-form">
+                    Already have an account? <a href="#" onclick="showPage('login-page')">Sign In</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="welcome-page" class="page">
+            <div class="welcome-container">
+                <h1>Welcome to Our Platform! 🎉</h1>
+                <p>You have successfully logged in to your account.</p>
+                <button class="btn-primary" onclick="goToDashboard()">Go to Dashboard</button>
+            </div>
+        </div>
+
+        <div id="dashboard-page" class="page">
+            <nav class="navbar">
+                <div class="nav-brand">Dashboard</div>
+                <div class="nav-items">
+                    <span id="user-greeting">Hello, User!</span>
+                    <button class="btn-secondary" onclick="logout()">Logout</button>
+                </div>
+            </nav>
+            <div class="dashboard-container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Profile Views</h3>
+                        <p class="stat-number">1,234</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Messages</h3>
+                        <p class="stat-number">42</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Tasks</h3>
+                        <p class="stat-number">12</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Projects</h3>
+                        <p class="stat-number">8</p>
+                    </div>
+                </div>
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <ul id="activity-list">
+                        <li>Logged in successfully</li>
+                        <li>Updated profile information</li>
+                        <li>Completed task: Project setup</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
