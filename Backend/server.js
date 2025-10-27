@@ -12,19 +12,36 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Database connection
+// Database connection with port
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'auth_app'
+    database: process.env.DB_NAME || 'auth_app',
+    port: process.env.DB_PORT || 3306, // MySQL default port
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 };
 
 // Create database connection pool
 const pool = mysql.createPool(dbConfig);
 
-// JWT secret - using fallback only (removed from .env)
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-development-only-change-in-production';
+// Test database connection
+async function testDatabaseConnection() {
+    try {
+        const connection = await pool.getConnection();
+        console.log('✅ Database connected successfully');
+        connection.release();
+        return true;
+    } catch (error) {
+        console.error('❌ Database connection failed:', error.message);
+        return false;
+    }
+}
+
+// JWT secret
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-development-only';
 
 // Initialize database
 async function initializeDatabase() {
@@ -42,10 +59,10 @@ async function initializeDatabase() {
             )
         `);
         
-        console.log('Database initialized successfully');
+        console.log('✅ Database initialized successfully');
         connection.release();
     } catch (error) {
-        console.error('Database initialization failed:', error);
+        console.error('❌ Database initialization failed:', error);
     }
 }
 
@@ -179,7 +196,15 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
 
 // Start server
 app.listen(PORT, async () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`JWT Secret: Using ${process.env.JWT_SECRET ? 'environment variable' : 'fallback development secret'}`);
-    await initializeDatabase();
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`🗄️  Database: ${dbConfig.host}:${dbConfig.port}`);
+    console.log(`🔑 JWT: Using ${process.env.JWT_SECRET ? 'environment variable' : 'fallback development secret'}`);
+    
+    // Test database connection
+    const dbConnected = await testDatabaseConnection();
+    if (dbConnected) {
+        await initializeDatabase();
+    } else {
+        console.log('⚠️  Server started but database is not connected');
+    }
 });
