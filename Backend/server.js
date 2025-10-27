@@ -23,6 +23,9 @@ const dbConfig = {
 // Create database connection pool
 const pool = mysql.createPool(dbConfig);
 
+// JWT secret - using fallback only (removed from .env)
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-development-only-change-in-production';
+
 // Initialize database
 async function initializeDatabase() {
     try {
@@ -45,9 +48,6 @@ async function initializeDatabase() {
         console.error('Database initialization failed:', error);
     }
 }
-
-// JWT secret
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Auth middleware
 const authenticateToken = (req, res, next) => {
@@ -180,5 +180,6 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
 // Start server
 app.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`JWT Secret: Using ${process.env.JWT_SECRET ? 'environment variable' : 'fallback development secret'}`);
     await initializeDatabase();
 });
