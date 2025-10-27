@@ -1,0 +1,47 @@
+1. with same IP/Domain
+2. With seperate ip(servers)/Domains
+
+
+1. Use relative path (recommended)
+
+If your frontend and backend are hosted on the same domain/server, just use:
+
+const API_BASE = '/api';
+
+
+Then configure your reverse proxy (like Nginx or Apache) to forward /api requests to the backend (e.g., Node.js at port 3000).
+
+Example Nginx config:
+
+location /api/ {
+    proxy_pass http://localhost:3000/api/;
+}
+
+-------------------------------------------------------------------------------------------------------
+2. Use full server URL (if backend is separate)
+
+If frontend and backend are on different servers:
+
+const API_BASE = 'http://<your-ec2-public-ip>:3000/api';
+
+
+But then make sure:
+
+Your EC2 security group allows inbound traffic on port 3000.
+
+The backend listens on 0.0.0.0 (not just localhost).
+
+app.listen(3000, '0.0.0.0', () => console.log('Server running'));
+
+
+You handle CORS on the backend:
+
+const cors = require('cors');
+app.use(cors());
+
+🔍 Quick way to check
+
+In your browser console (Network tab), see what URL the frontend is calling.
+If it says http://localhost:3000/... while the page is hosted on your EC2 IP — that’s the problem.
+
+--------------------------------------------------------------------------------------------------------
